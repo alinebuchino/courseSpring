@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Table(name = "tb_order")
 public class Order implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -38,10 +38,10 @@ public class Order implements Serializable {
 	@ManyToOne // Criará chave estrangeira de Muitos p/ Um
 	@JoinColumn(name = "client_id") // Nome que terá a chave estrangeira
 	private _User client;
-	
+
 	@OneToMany(mappedBy = "id.order")
 	private Set<OrderItem> items = new HashSet<>();
-	
+
 	@OneToOne(mappedBy = "order", cascade = CascadeType.ALL) // quando tem relacão de um para um s
 	private Payment payment;
 
@@ -90,7 +90,7 @@ public class Order implements Serializable {
 	public void setClient(_User client) {
 		this.client = client;
 	}
-	
+
 	public Payment getPayment() {
 		return payment;
 	}
@@ -99,8 +99,16 @@ public class Order implements Serializable {
 		this.payment = payment;
 	}
 
-	public Set<OrderItem> getItems(){
+	public Set<OrderItem> getItems() {
 		return items;
+	}
+	
+	public Double getTotal() {
+		double sum = 0.0;
+		for (OrderItem x : items) {
+			sum += x.getSubTotal();
+		}
+		return sum;
 	}
 
 	@Override
